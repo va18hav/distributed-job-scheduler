@@ -15,3 +15,19 @@ export const createJob = async (data: CreateJob) => {
 export const getAllJobs = async () => {
     return await prisma.job.findMany()
 }
+
+export const getAllPendingJobs = async () => {
+    return await prisma.job.findMany({
+        where: {
+            status: 'PENDING'
+        }
+    })
+}
+
+export const getPendingJob = async () => {
+    return await prisma.job.findFirst({
+        where: {
+            status: 'PENDING'
+        }
+    })
+}
