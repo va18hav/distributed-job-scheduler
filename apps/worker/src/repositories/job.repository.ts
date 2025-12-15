@@ -24,3 +24,33 @@ export const acquireNextJob = async (workerId: string): Promise<Job | null> => {
 
     return jobs[0]
 }
+
+export const retryJob = async (id: string, availableAt: Date) => {
+    return await prisma.job.update({
+        where: { id },
+        data: {
+            status: 'PENDING',
+            availableAt,
+            lockedAt: null,
+            lockedBy: null
+        }
+    })
+}
+
+export const completedJob = async (id: string) => {
+    return await prisma.job.update({
+        where: { id },
+        data: {
+            status: 'COMPLETED'
+        }
+    })
+}
+
+export const failedJob = async (id: string) => {
+    return await prisma.job.update({
+        where: { id },
+        data: {
+            status: 'FAILED'
+        }
+    })
+}
