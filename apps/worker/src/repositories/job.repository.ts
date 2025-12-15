@@ -5,7 +5,8 @@ export const acquireNextJob = async (workerId: string): Promise<Job | null> => {
      WITH next_job AS(
         SELECT id
         FROM "Job"
-        WHERE status = 'PENDING' AND "availableAt" <= NOW()
+        WHERE (status = 'PENDING' AND "availableAt" <= NOW())
+         OR (status = 'RUNNING' AND "lockedAt" < NOW() - INTERVAL '30 seconds')
         ORDER BY "priority" DESC, "createdAt" ASC
         LIMIT 1
         FOR UPDATE SKIP LOCKED
@@ -35,6 +36,14 @@ export const retryJob = async (id: string, availableAt: Date) => {
             lockedBy: null
         }
     })
+}
+
+export const updateHeartbeat = async (jobId: string) => {
+    await prisma.$queryRaw<Job[]>`
+    UPDATE "Job"
+    SET "lockedAt" = NOW()
+    WHERE id = ${jobId}
+    `
 }
 
 export const completedJob = async (id: string) => {
