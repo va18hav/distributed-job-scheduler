@@ -31,3 +31,33 @@ export const getPendingJob = async () => {
         }
     })
 }
+
+export const getSystemStats = async () => {
+    const counts = await prisma.job.groupBy({
+        by: ['status'],
+        _count: { id: true }
+    })
+
+    const activeWorkers = await prisma.job.groupBy({
+        by: ['lockedBy'],
+        where: {
+            status: 'RUNNING',
+            lockedAt: {
+                gte: new Date(Date.now() - 30 * 1000)
+            }
+        },
+        _count: { id: true }
+    })
+
+    const activeWorkersCount = activeWorkers.filter(w => w.lockedBy !== null).length
+
+    const queueDepth = counts.reduce((acc, curr) => {
+        acc[curr.status] = curr._count.id
+        return acc
+    }, {} as Record<string, number>)
+
+    return {
+        queueDepth,
+        activeWorkersCount
+    }
+}
