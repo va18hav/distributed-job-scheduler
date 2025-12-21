@@ -16,3 +16,7 @@ export const getAllPendingJobs = async () => {
 export const getAllJobs = async () => {
     return await jobDb.getAllJobs()
 }
+
+export const getSystemStats = async () => {
+    return await jobDb.getSystemStats()
+}

@@ -46,3 +46,16 @@ export const getAllJobs = async (req: Request, res: Response, next: NextFunction
         next(error);
     }
 };
+
+export const getSystemStats = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const result = await jobService.getSystemStats();
+        res.status(200).json({
+            success: true,
+            message: 'System stats fetched successfully',
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
+};
