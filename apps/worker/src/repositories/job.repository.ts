@@ -19,47 +19,57 @@ export const acquireNextJob = async (workerId: string): Promise<Job | null> => {
         "attempts" = attempts + 1
     FROM next_job
     WHERE "Job".id = next_job.id
-    RETURNING *;
+    RETURNING "Job".*;
     `
     if (jobs.length === 0) return null
 
     return jobs[0]
 }
 
-export const retryJob = async (id: string, availableAt: Date) => {
-    return await prisma.job.update({
-        where: { id },
+export const retryJob = async (id: string, workerId: string, availableAt: Date, lastError: string) => {
+    return await prisma.job.updateMany({
+        where: { id, lockedBy: workerId },
         data: {
             status: 'PENDING',
             availableAt,
             lockedAt: null,
-            lockedBy: null
+            lockedBy: null,
+            lastError
         }
     })
 }
 
-export const updateHeartbeat = async (jobId: string) => {
-    await prisma.$queryRaw<Job[]>`
+export const updateHeartbeat = async (jobId: string, workerId: string) => {
+    await prisma.$executeRaw`
     UPDATE "Job"
     SET "lockedAt" = NOW()
     WHERE id = ${jobId}
+      AND "lockedBy" = ${workerId}
+      AND status = 'RUNNING'
     `
 }
 
-export const completedJob = async (id: string) => {
-    return await prisma.job.update({
-        where: { id },
+export const completedJob = async (id: string, workerId: string) => {
+    return await prisma.job.updateMany({
+        where: { id, lockedBy: workerId },
         data: {
-            status: 'COMPLETED'
+            status: 'COMPLETED',
+            lockedAt: null,
+            lockedBy: null,
+            lastError: null
         }
     })
 }
 
-export const failedJob = async (id: string) => {
-    return await prisma.job.update({
-        where: { id },
+export const failedJob = async (id: string, workerId: string, lastError: string) => {
+    return await prisma.job.updateMany({
+        where: { id, lockedBy: workerId },
         data: {
-            status: 'FAILED'
+            status: 'FAILED',
+            lockedAt: null,
+            lockedBy: null,
+            lastError
         }
     })
 }
+
