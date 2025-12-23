@@ -36,10 +36,26 @@ export const getAllPendingJobs = async (req: Request, res: Response, next: NextF
 
 export const getAllJobs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const result = await jobService.getAllJobs();
+        const limit = req.query.limit ? Math.min(Math.max(parseInt(String(req.query.limit), 10) || 50, 1), 100) : 50;
+        const offset = req.query.offset ? Math.max(parseInt(String(req.query.offset), 10) || 0, 0) : 0;
+        const result = await jobService.getAllJobs({ limit, offset });
         res.status(200).json({
             success: true,
             message: result && result.length > 0 ? 'Job fetched successfully' : 'There are no jobs',
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getJobById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const id = String(req.params.id);
+        const result = await jobService.getJobById(id);
+        res.status(200).json({
+            success: true,
+            message: 'Job fetched successfully',
             data: result
         });
     } catch (error) {

@@ -7,7 +7,8 @@ const router = Router()
 
 router.post('/', validate(CreateJobSchema), jobController.createJob)
 router.get('/stats', jobController.getSystemStats)
-router.get('/', jobController.getAllJobs)
 router.get('/pending', jobController.getAllPendingJobs)
+router.get('/:id', jobController.getJobById)
+router.get('/', jobController.getAllJobs)
 
 export default router

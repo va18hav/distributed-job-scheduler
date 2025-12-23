@@ -12,6 +12,10 @@ const app = express()
 app.use(pinoHttp({ logger }))
 app.use(express.json())
 
+app.get('/health', (_req, res) => {
+    res.status(200).json({ status: 'ok' })
+})
+
 app.use('/job', jobRoutes)
 
 // Error boundary registered at the end of stack
