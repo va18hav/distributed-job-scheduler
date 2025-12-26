@@ -5,8 +5,18 @@
         "apps/*",
         "packages/*"
     ],
+    "scripts": {
+        "dev": "npm --workspace=scheduler run dev",
+        "dev:scheduler": "npm --workspace=scheduler run dev",
+        "dev:worker": "npm --workspace=worker run dev",
+        "test": "npm --workspaces --if-present run test",
+        "typecheck": "tsc -p packages/db/tsconfig.json --noEmit && tsc -p apps/scheduler/tsconfig.json --noEmit && tsc -p apps/worker/tsconfig.json --noEmit",
+        "db:generate": "npx prisma generate --schema=packages/db/prisma/schema.prisma"
+    },
     "devDependencies": {
         "@types/node": "^26.1.0",
+        "prisma": "^7.8.0",
+        "tsx": "^4.23.0",
         "typescript": "^6.0.3"
     }
 }

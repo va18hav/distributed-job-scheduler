@@ -35,8 +35,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "3001:3001"
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/scheduler
       - HEARTBEAT_INTERVAL=5000
