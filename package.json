@@ -11,7 +11,8 @@
         "dev:worker": "npm --workspace=worker run dev",
         "test": "npm --workspaces --if-present run test",
         "typecheck": "tsc -p packages/db/tsconfig.json --noEmit && tsc -p apps/scheduler/tsconfig.json --noEmit && tsc -p apps/worker/tsconfig.json --noEmit",
-        "db:generate": "npx prisma generate --schema=packages/db/prisma/schema.prisma"
+        "db:generate": "npx prisma generate --schema=packages/db/prisma/schema.prisma",
+        "benchmark": "LOG_LEVEL=silent tsx benchmarks/run-benchmarks.ts"
     },
     "devDependencies": {
         "@types/node": "^26.1.0",
