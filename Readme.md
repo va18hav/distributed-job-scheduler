@@ -118,6 +118,40 @@ Defined in [`packages/db/prisma/schema.prisma`](packages/db/prisma/schema.prisma
 
 ---
 
+## Performance & Benchmarks
+
+Reproducible benchmark suite located in [`benchmarks/run-benchmarks.ts`](benchmarks/run-benchmarks.ts) (runnable via `npm run benchmark` against PostgreSQL 16).
+
+### 1. Multi-Worker `SKIP LOCKED` Concurrency (2,000 Queued Jobs)
+Measures pure lock-acquisition + completion throughput and lock contention across 1 to 16 concurrent workers polling PostgreSQL simultaneously:
+
+| Concurrent Workers | Throughput (`jobs/sec`) | Lock Acquire `p50` | Lock Acquire `p95` | Lock Acquire `p99` | Jobs Claimed | Duplicate Executions |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **1 Worker** | `695 jobs/s` | `0.65 ms` | `0.95 ms` | `1.90 ms` | `2,000 / 2,000` | `0 (0%)` |
+| **4 Workers** | `1,490 jobs/s` | `1.13 ms` | `1.80 ms` | `4.59 ms` | `2,000 / 2,000` | `0 (0%)` |
+| **8 Workers** | `1,967 jobs/s` | `1.65 ms` | `2.85 ms` | `5.91 ms` | `2,000 / 2,000` | `0 (0%)` |
+| **16 Workers** | **`2,090 jobs/s`** | `3.45 ms` | **`4.96 ms`** | `6.71 ms` | `2,000 / 2,000` | **`0 (0%)`** |
+
+### 2. Indexed vs. Unindexed Polling at Scale (100,000 Jobs in Table)
+Evaluates `acquireNextJob` polling against a table populated with 100,000 jobs (`90k COMPLETED`, `5k FAILED`, `4k delayed PENDING`, `1k ready PENDING`) using `EXPLAIN (ANALYZE, BUFFERS)`:
+
+| Configuration | Query Plan | Shared Buffers Read | SQL Execution Time | End-to-End Poll `p50` | End-to-End Poll `p95` |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Unindexed** | `Seq Scan` (99,000 rows filtered) | `1,826 buffers` | `5.94 ms` | `5.82 ms` | `7.48 ms` |
+| **Composite Indexes** | `Bitmap Index Scan` | **`107 buffers` (-94.1%)** | **`1.35 ms` (-77.3%)** | **`1.76 ms` (3.3x faster)** | **`4.01 ms`** |
+
+### 3. Crash Recovery & Split-Brain Fencing Integrity
+Simulates 200 workers crashing mid-execution (`lockedAt` expired past the 30s heartbeat TTL), followed by healthy worker reclamation and late "zombie" worker completion attempts:
+- **Stalled Jobs Reclaimed**: `200 / 200 (100%)` in `105.98 ms` (`0.53 ms/job`)
+- **Zombie Worker Overwrites**: `0 / 200 (0%)` — all stale writes rejected by `WHERE id = $1 AND "lockedBy" = $2` fencing
+
+### 4. Scheduler API Ingestion Load Test (`POST /job`)
+1,000 HTTP `POST /job` requests across 20 concurrent connections (Express 5 + Zod schema validation + PostgreSQL insert):
+- **Throughput**: **`2,282 req/sec`** (`1,000 / 1,000` `201 Created`)
+- **Latency**: `p50: 6.76 ms` | `p95: 14.72 ms` | `p99: 56.02 ms`
+
+---
+
 ## Quick Start
 
 ### Run with Docker Compose (Recommended)
