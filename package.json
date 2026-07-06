@@ -1,0 +1,13 @@
+{
+    "name": "distributed-job-scheduler",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "devDependencies": {
+        "@types/node": "^26.1.0",
+        "tsx": "^4.23.0",
+        "typescript": "^6.0.3"
+    }
+}
