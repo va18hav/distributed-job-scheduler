@@ -9,19 +9,14 @@ This document details the system design, transaction mechanics, worker lifecycle
 The system uses a producer-consumer model coordinated through PostgreSQL row-level locks.
 
 ```mermaid
-graph TD
-    Client[Client / REST API Caller] -->|POST /job| Scheduler[Scheduler Express App]
-    Scheduler -->|INSERT Job| DB[(PostgreSQL Database)]
+graph LR
+    Client[API Client] -->|POST /job| Scheduler[Express Scheduler]
+    Scheduler -->|Insert Job| DB[(PostgreSQL Database)]
     
-    subgraph Worker Pool
-        Worker1[Worker Node 1] -->|acquireNextJob| DB
-        Worker2[Worker Node 2] -->|acquireNextJob| DB
-        Worker3[Worker Node 3] -->|acquireNextJob| DB
+    subgraph Worker Cluster
+        DB <-->|Polled Lock & Heartbeat| Workers[Worker Nodes 1..N]
+        Workers -->|Execute| Task[Simulated Task]
     end
-    
-    Worker1 -->|Heartbeat Interval| DB
-    Worker1 -->|executeJob| SimulatedTask[Simulated Workload]
-    Worker1 -->|completedJob| DB
 ```
 
 ---
@@ -76,31 +71,26 @@ RETURNING *;
 Each worker runs a loop that polls the database and handles heartbeats:
 
 ```mermaid
-sequenceDiagram
-    participant W as Worker Node
-    participant DB as PostgreSQL
+flowchart TD
+    Start([Start Loop]) --> Poll[Query: acquireNextJob]
+    Poll --> HasJob{Job found?}
     
-    loop Every 1 Second
-        W->>DB: execute acquireNextJob()
-        alt Job found
-            DB-->>W: Return job details
-            Note over W: Start background heartbeat (setInterval)
-            loop Every 5 Seconds
-                W->>DB: updateHeartbeat() -> set lockedAt = NOW()
-            end
-            Note over W: Execute Task workload
-            alt Task Success
-                W->>DB: completedJob() -> set status = COMPLETED
-            else Task Fails (Attempts < Max)
-                W->>DB: retryJob() -> set status = PENDING, availableAt = exponential delay
-            else Task Fails (Attempts >= Max)
-                W->>DB: failedJob() -> set status = FAILED
-            end
-            Note over W: Clear heartbeat (clearInterval)
-        else No job found
-            W->>W: Sleep 1 second
-        end
-    end
+    HasJob -->|No| Sleep[Sleep 1s] --> Start
+    
+    HasJob -->|Yes| Lock[Start Heartbeat Timer]
+    Lock --> Run[Execute Job Workload]
+    
+    Run --> Result{Task Execution?}
+    
+    Result -->|Success| Complete[Set status = COMPLETED]
+    Result -->|Failure| CheckAttempts{Attempts < Max?}
+    
+    CheckAttempts -->|Yes| Retry[Set status = PENDING & delay availableAt]
+    CheckAttempts -->|No| Fail[Set status = FAILED]
+    
+    Complete --> Clear[Clear Heartbeat Timer] --> Start
+    Retry --> Clear
+    Fail --> Clear
 ```
 
 ---
