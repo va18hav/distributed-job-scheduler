@@ -9,7 +9,7 @@ export const acquireNextJob = async (workerId: string): Promise<Job | null> => {
         FROM "Job"
         WHERE (status = 'PENDING' AND "availableAt" <= NOW())
          OR (status = 'RUNNING' AND "lockedAt" < NOW() - INTERVAL '30 seconds')
-        ORDER BY "createdAt"
+        ORDER BY "priority" DESC, "createdAt" ASC
         LIMIT 1
         FOR UPDATE SKIP LOCKED
      )

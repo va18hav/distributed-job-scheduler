@@ -13,6 +13,7 @@ model Job {
   payload     Json
   status      JobStatus @default(PENDING)
   createdAt   DateTime  @default(now())
+  priority    Int       @default(0)
   lockedBy    String?
   lockedAt    DateTime?
   attempts    Int       @default(0)

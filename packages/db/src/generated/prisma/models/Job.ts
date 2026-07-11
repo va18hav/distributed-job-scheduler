@@ -27,10 +27,12 @@ export type AggregateJob = {
 }
 
 export type JobAvgAggregateOutputType = {
+  priority: number | null
   attempts: number | null
 }
 
 export type JobSumAggregateOutputType = {
+  priority: number | null
   attempts: number | null
 }
 
@@ -39,6 +41,7 @@ export type JobMinAggregateOutputType = {
   type: string | null
   status: $Enums.JobStatus | null
   createdAt: Date | null
+  priority: number | null
   lockedBy: string | null
   lockedAt: Date | null
   attempts: number | null
@@ -51,6 +54,7 @@ export type JobMaxAggregateOutputType = {
   type: string | null
   status: $Enums.JobStatus | null
   createdAt: Date | null
+  priority: number | null
   lockedBy: string | null
   lockedAt: Date | null
   attempts: number | null
@@ -64,6 +68,7 @@ export type JobCountAggregateOutputType = {
   payload: number
   status: number
   createdAt: number
+  priority: number
   lockedBy: number
   lockedAt: number
   attempts: number
@@ -74,10 +79,12 @@ export type JobCountAggregateOutputType = {
 
 
 export type JobAvgAggregateInputType = {
+  priority?: true
   attempts?: true
 }
 
 export type JobSumAggregateInputType = {
+  priority?: true
   attempts?: true
 }
 
@@ -86,6 +93,7 @@ export type JobMinAggregateInputType = {
   type?: true
   status?: true
   createdAt?: true
+  priority?: true
   lockedBy?: true
   lockedAt?: true
   attempts?: true
@@ -98,6 +106,7 @@ export type JobMaxAggregateInputType = {
   type?: true
   status?: true
   createdAt?: true
+  priority?: true
   lockedBy?: true
   lockedAt?: true
   attempts?: true
@@ -111,6 +120,7 @@ export type JobCountAggregateInputType = {
   payload?: true
   status?: true
   createdAt?: true
+  priority?: true
   lockedBy?: true
   lockedAt?: true
   attempts?: true
@@ -211,6 +221,7 @@ export type JobGroupByOutputType = {
   payload: runtime.JsonValue
   status: $Enums.JobStatus
   createdAt: Date
+  priority: number
   lockedBy: string | null
   lockedAt: Date | null
   attempts: number
@@ -247,6 +258,7 @@ export type JobWhereInput = {
   payload?: Prisma.JsonFilter<"Job">
   status?: Prisma.EnumJobStatusFilter<"Job"> | $Enums.JobStatus
   createdAt?: Prisma.DateTimeFilter<"Job"> | Date | string
+  priority?: Prisma.IntFilter<"Job"> | number
   lockedBy?: Prisma.StringNullableFilter<"Job"> | string | null
   lockedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   attempts?: Prisma.IntFilter<"Job"> | number
@@ -260,6 +272,7 @@ export type JobOrderByWithRelationInput = {
   payload?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   lockedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   lockedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -276,6 +289,7 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   payload?: Prisma.JsonFilter<"Job">
   status?: Prisma.EnumJobStatusFilter<"Job"> | $Enums.JobStatus
   createdAt?: Prisma.DateTimeFilter<"Job"> | Date | string
+  priority?: Prisma.IntFilter<"Job"> | number
   lockedBy?: Prisma.StringNullableFilter<"Job"> | string | null
   lockedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   attempts?: Prisma.IntFilter<"Job"> | number
@@ -289,6 +303,7 @@ export type JobOrderByWithAggregationInput = {
   payload?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   lockedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   lockedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -310,6 +325,7 @@ export type JobScalarWhereWithAggregatesInput = {
   payload?: Prisma.JsonWithAggregatesFilter<"Job">
   status?: Prisma.EnumJobStatusWithAggregatesFilter<"Job"> | $Enums.JobStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Job"> | Date | string
+  priority?: Prisma.IntWithAggregatesFilter<"Job"> | number
   lockedBy?: Prisma.StringNullableWithAggregatesFilter<"Job"> | string | null
   lockedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
   attempts?: Prisma.IntWithAggregatesFilter<"Job"> | number
@@ -323,6 +339,7 @@ export type JobCreateInput = {
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.JobStatus
   createdAt?: Date | string
+  priority?: number
   lockedBy?: string | null
   lockedAt?: Date | string | null
   attempts?: number
@@ -336,6 +353,7 @@ export type JobUncheckedCreateInput = {
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.JobStatus
   createdAt?: Date | string
+  priority?: number
   lockedBy?: string | null
   lockedAt?: Date | string | null
   attempts?: number
@@ -349,6 +367,7 @@ export type JobUpdateInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   lockedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -362,6 +381,7 @@ export type JobUncheckedUpdateInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   lockedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -375,6 +395,7 @@ export type JobCreateManyInput = {
   payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.JobStatus
   createdAt?: Date | string
+  priority?: number
   lockedBy?: string | null
   lockedAt?: Date | string | null
   attempts?: number
@@ -388,6 +409,7 @@ export type JobUpdateManyMutationInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   lockedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -401,6 +423,7 @@ export type JobUncheckedUpdateManyInput = {
   payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   lockedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -414,6 +437,7 @@ export type JobCountOrderByAggregateInput = {
   payload?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   lockedBy?: Prisma.SortOrder
   lockedAt?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -422,6 +446,7 @@ export type JobCountOrderByAggregateInput = {
 }
 
 export type JobAvgOrderByAggregateInput = {
+  priority?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
 }
 
@@ -430,6 +455,7 @@ export type JobMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   lockedBy?: Prisma.SortOrder
   lockedAt?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -442,6 +468,7 @@ export type JobMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   lockedBy?: Prisma.SortOrder
   lockedAt?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -450,6 +477,7 @@ export type JobMinOrderByAggregateInput = {
 }
 
 export type JobSumOrderByAggregateInput = {
+  priority?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
 }
 
@@ -465,20 +493,20 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 
@@ -489,6 +517,7 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   payload?: boolean
   status?: boolean
   createdAt?: boolean
+  priority?: boolean
   lockedBy?: boolean
   lockedAt?: boolean
   attempts?: boolean
@@ -502,6 +531,7 @@ export type JobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   payload?: boolean
   status?: boolean
   createdAt?: boolean
+  priority?: boolean
   lockedBy?: boolean
   lockedAt?: boolean
   attempts?: boolean
@@ -515,6 +545,7 @@ export type JobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   payload?: boolean
   status?: boolean
   createdAt?: boolean
+  priority?: boolean
   lockedBy?: boolean
   lockedAt?: boolean
   attempts?: boolean
@@ -528,6 +559,7 @@ export type JobSelectScalar = {
   payload?: boolean
   status?: boolean
   createdAt?: boolean
+  priority?: boolean
   lockedBy?: boolean
   lockedAt?: boolean
   attempts?: boolean
@@ -535,7 +567,7 @@ export type JobSelectScalar = {
   updatedAt?: boolean
 }
 
-export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "payload" | "status" | "createdAt" | "lockedBy" | "lockedAt" | "attempts" | "availableAt" | "updatedAt", ExtArgs["result"]["job"]>
+export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "payload" | "status" | "createdAt" | "priority" | "lockedBy" | "lockedAt" | "attempts" | "availableAt" | "updatedAt", ExtArgs["result"]["job"]>
 
 export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Job"
@@ -546,6 +578,7 @@ export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     payload: runtime.JsonValue
     status: $Enums.JobStatus
     createdAt: Date
+    priority: number
     lockedBy: string | null
     lockedAt: Date | null
     attempts: number
@@ -979,6 +1012,7 @@ export interface JobFieldRefs {
   readonly payload: Prisma.FieldRef<"Job", 'Json'>
   readonly status: Prisma.FieldRef<"Job", 'JobStatus'>
   readonly createdAt: Prisma.FieldRef<"Job", 'DateTime'>
+  readonly priority: Prisma.FieldRef<"Job", 'Int'>
   readonly lockedBy: Prisma.FieldRef<"Job", 'String'>
   readonly lockedAt: Prisma.FieldRef<"Job", 'DateTime'>
   readonly attempts: Prisma.FieldRef<"Job", 'Int'>

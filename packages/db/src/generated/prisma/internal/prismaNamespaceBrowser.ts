@@ -76,6 +76,7 @@ export const JobScalarFieldEnum = {
   payload: 'payload',
   status: 'status',
   createdAt: 'createdAt',
+  priority: 'priority',
   lockedBy: 'lockedBy',
   lockedAt: 'lockedAt',
   attempts: 'attempts',

@@ -10,6 +10,44 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d scheduler"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/scheduler
+      - PORT=3000
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    command: sh -c "npx prisma db push --schema=packages/db/prisma/schema.prisma && npx tsx apps/scheduler/src/server.ts"
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/scheduler
+      - HEARTBEAT_INTERVAL=5000
+      - MAX_RETRIES=3
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+      scheduler:
+        condition: service_started
+    command: npx tsx apps/worker/src/index.ts
+    restart: unless-stopped
 
 volumes:
   postgres_data:

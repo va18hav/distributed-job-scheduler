@@ -3,8 +3,13 @@ import { CreateJob } from "../types/job.types.js";
 import * as jobService from '../services/job.service.js'
 
 export const createJob = async (req: Request, res: Response) => {
-    const { type, payload }: CreateJob = req.body
-    const result = await jobService.createJob({ type, payload })
+    const { type, payload, priority, availableAt }: CreateJob = req.body
+    const result = await jobService.createJob({ 
+        type, 
+        payload, 
+        priority: priority !== undefined ? Number(priority) : undefined, 
+        availableAt: availableAt ? new Date(availableAt) : undefined 
+    })
     res.status(201).json({
         success: true,
         message: 'Job has been created successfully',
