@@ -28,7 +28,7 @@ services:
     depends_on:
       postgres_db:
         condition: service_healthy
-    command: sh -c "npx prisma db push --schema=packages/db/prisma/schema.prisma && npx tsx apps/scheduler/src/server.ts"
+    command: sh -c "npx prisma migrate deploy --schema=packages/db/prisma/schema.prisma && npx tsx apps/scheduler/src/server.ts"
     restart: unless-stopped
 
   worker:

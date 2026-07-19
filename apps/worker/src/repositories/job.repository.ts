@@ -1,6 +1,6 @@
 import { JsonValue } from '@prisma/client/runtime/client'
 import { prisma } from 'db'
-import { Job } from 'db/src/generated/prisma/client'
+import { Job } from 'db'
 
 export const acquireNextJob = async (workerId: string): Promise<Job | null> => {
     const jobs = await prisma.$queryRaw<Job[]>`

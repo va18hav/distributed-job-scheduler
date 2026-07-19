@@ -23,3 +23,4 @@ else {
 }
 
 export { prisma }
+export type { Job } from './generated/prisma/client.js'

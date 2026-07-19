@@ -1,4 +1,4 @@
-import { startWorker } from "./worker";
+import { startWorker } from "./worker.js";
 
 import { config } from 'dotenv'
 config()

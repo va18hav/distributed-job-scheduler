@@ -1,5 +1,5 @@
 import { CreateJob } from "../types/job.types.js";
-import * as jobDb from '../repositories/job.respository.js'
+import * as jobDb from '../repositories/job.repository.js'
 
 export const createJob = async (data: CreateJob) => {
     return await jobDb.createJob(data)
@@ -15,4 +15,8 @@ export const getAllPendingJobs = async () => {
 
 export const getAllJobs = async () => {
     return await jobDb.getAllJobs()
+}
+
+export const getSystemStats = async () => {
+    return await jobDb.getSystemStats()
 }
